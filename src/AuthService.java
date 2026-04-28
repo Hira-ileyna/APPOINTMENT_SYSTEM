@@ -6,6 +6,9 @@ public class AuthService {
     public void register(User user) {
         users.put(user.getUsername(), user);
     }
+    public boolean userExists(String username) {
+        return users.containsKey(username);
+    }
 
     public User login(String username, String password) {
         User user = users.get(username);

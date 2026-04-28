@@ -14,7 +14,8 @@ public class Main {
         while (running) {
             System.out.println("\n--- RANDEVU SİSTEMİ ---");
             System.out.println("1- Giriş Yap");
-            System.out.println("2- Çıkış");
+            System.out.println("2- Kayıt Ol");
+            System.out.println("3- Çıkış");
             System.out.print("Seçiminiz: ");
 
             int choice = scanner.nextInt();
@@ -50,6 +51,9 @@ public class Main {
                     break;
 
                 case 2:
+                    registerMenu(authService, scanner);
+                    break;
+                case 3:
                     System.out.println("Çıkış yapılıyor...");
                     running = false;
                     break;
@@ -119,11 +123,8 @@ public class Main {
         }
     }
 
-    private static void userMenu(
-            RegularUser user,
-            Company company,
-            Scanner scanner) {
-
+    private static void userMenu(RegularUser user, Company company, Scanner scanner)
+    {
         AppointmentService appointmentService = new AppointmentService();
         boolean inMenu = true;
 
@@ -170,8 +171,48 @@ public class Main {
                     break;
             }
         }
+
+
     }
+    private static void registerMenu(AuthService authService, Scanner scanner) {
+        System.out.println("\n--- KAYIT OL ---");
 
+        System.out.print("Kullanıcı adı: ");
+        String username = scanner.nextLine();
 
+        if (authService.userExists(username)) {
+            System.out.println("Bu kullanıcı adı zaten mevcut!");
+            return;
+        }
 
+        System.out.print("Şifre: ");
+        String password = scanner.nextLine();
+
+        System.out.println("Rol seç:");
+        System.out.println("1- Kullanıcı");
+        System.out.println("2- Firma Sahibi");
+        System.out.print("Seçim: ");
+
+        int role = scanner.nextInt();
+        scanner.nextLine();
+
+        if (role == 1) {
+            authService.register(new RegularUser(username, password));
+            System.out.println("Kullanıcı kaydı başarılı!");
+
+        }
+        else if (role == 2) {
+            System.out.print("Şirket adı: ");
+            String companyName = scanner.nextLine();
+
+            Company companyX = new Company(companyName);
+            Customer customer = new Customer(username, password, companyX);
+
+            authService.register(customer);
+            System.out.println("Firma sahibi kaydı başarılı!");
+
+        } else {
+            System.out.println("Geçersiz rol seçimi!");
+        }
+    }
 }
